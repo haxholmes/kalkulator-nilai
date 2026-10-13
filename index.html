@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kalkulator Nilai Sekolah</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #141c30;
+      --panel2: #1b2740;
+      --text: #f4f7ff;
+      --muted: #a9b5ce;
+      --accent: #7c9cff;
+      --accent2: #9d7cff;
+      --border: #2c3956;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at top left, #1a2850 0, var(--bg) 48%);
+      padding: 28px 16px;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+    header { text-align: center; margin: 12px 0 28px; }
+    .logo {
+      display: inline-grid; place-items: center; width: 54px; height: 54px;
+      border-radius: 16px; background: linear-gradient(135deg, var(--accent), var(--accent2));
+      font-size: 26px; margin-bottom: 10px;
+    }
+    h1 { margin: 0; font-size: clamp(26px, 4vw, 38px); letter-spacing: -0.8px; }
+    header p { color: var(--muted); margin: 10px auto 0; max-width: 560px; line-height: 1.6; }
+    .layout { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 18px; }
+    .card {
+      background: rgba(20, 28, 48, .94); border: 1px solid var(--border);
+      border-radius: 22px; padding: 24px; box-shadow: 0 18px 50px rgba(0,0,0,.18);
+    }
+    h2 { font-size: 18px; margin: 0 0 20px; }
+    .field { margin-bottom: 17px; }
+    label { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 8px; font-weight: 650; font-size: 14px; }
+    label span { color: var(--muted); font-weight: 500; }
+    input {
+      width: 100%; border: 1px solid var(--border); border-radius: 12px;
+      padding: 13px 14px; background: #0e1629; color: var(--text);
+      font: inherit; outline: none; transition: border-color .2s;
+    }
+    input:focus { border-color: var(--accent); }
+    .hint { color: var(--muted); font-size: 12px; margin-top: 6px; }
+    .weight-note { padding: 11px 13px; border-radius: 12px; background: var(--panel2); color: var(--muted); font-size: 13px; margin: 8px 0 20px; }
+    .buttons { display: flex; gap: 10px; margin-top: 22px; }
+    button { border: 0; border-radius: 12px; padding: 13px 16px; font: inherit; font-weight: 750; cursor: pointer; }
+    .primary { flex: 1; color: #10162a; background: linear-gradient(135deg, #9cb4ff, #b6a1ff); }
+    .secondary { color: var(--text); background: var(--panel2); border: 1px solid var(--border); }
+    button:hover { filter: brightness(1.07); }
+    .result-card { display: flex; flex-direction: column; }
+    .result-top { color: var(--muted); font-size: 14px; }
+    .score {
+      display: grid; place-items: center; width: 160px; height: 160px; margin: 20px auto;
+      border-radius: 50%; border: 8px solid #29395f;
+      background: radial-gradient(circle, #1e2b4a, #141c30);
+      box-shadow: 0 0 0 8px rgba(124,156,255,.06);
+    }
+    .score strong { font-size: 42px; letter-spacing: -1px; }
+    .score small { color: var(--muted); margin-top: -35px; }
+    .grade { text-align: center; font-size: 22px; font-weight: 800; margin: 0; }
+    .message { color: var(--muted); text-align: center; line-height: 1.55; font-size: 14px; margin: 8px 0 22px; }
+    .breakdown { border-top: 1px solid var(--border); padding-top: 16px; margin-top: auto; }
+    .breakdown-row { display: flex; justify-content: space-between; gap: 12px; margin: 11px 0; font-size: 14px; }
+    .breakdown-row span { color: var(--muted); }
+    .error { display: none; color: #ffb3b3; background: #3b202b; padding: 11px 13px; border-radius: 10px; font-size: 13px; margin-top: 14px; }
+    footer { color: var(--muted); font-size: 12px; text-align: center; margin-top: 22px; line-height: 1.6; }
+    @media (max-width: 700px) {
+      .layout { grid-template-columns: 1fr; }
+      .card { padding: 20px; }
+      .result-card { min-height: 420px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <header>
+      <div class="logo" aria-hidden="true">✦</div>
+      <h1>Kalkulator Nilai</h1>
+      <p>Hitung perkiraan nilai akhir sekolah dengan memasukkan nilai tugas, UTS, dan UAS beserta bobotnya.</p>
+    </header>
+
+    <div class="layout">
+      <section class="card">
+        <h2>📚 Masukkan nilai</h2>
+        <form id="gradeForm">
+          <div class="field">
+            <label for="student">Nama siswa <span>opsional</span></label>
+            <input id="student" type="text" maxlength="60" placeholder="Contoh: Andi">
+          </div>
+          <div class="field">
+            <label for="task">Nilai tugas <span>0–100</span></label>
+            <input id="task" type="number" min="0" max="100" step="0.01" value="85" required>
+          </div>
+          <div class="field">
+            <label for="uts">Nilai UTS <span>0–100</span></label>
+            <input id="uts" type="number" min="0" max="100" step="0.01" value="80" required>
+          </div>
+          <div class="field">
+            <label for="uas">Nilai UAS <span>0–100</span></label>
+            <input id="uas" type="number" min="0" max="100" step="0.01" value="90" required>
+          </div>
+
+          <h2 style="margin-top:24px; margin-bottom:14px;">⚖️ Bobot penilaian</h2>
+          <div class="field">
+            <label for="taskWeight">Bobot tugas <span>%</span></label>
+            <input id="taskWeight" type="number" min="0" max="100" step="1" value="30" required>
+          </div>
+          <div class="field">
+            <label for="utsWeight">Bobot UTS <span>%</span></label>
+            <input id="utsWeight" type="number" min="0" max="100" step="1" value="30" required>
+          </div>
+          <div class="field">
+            <label for="uasWeight">Bobot UAS <span>%</span></label>
+            <input id="uasWeight" type="number" min="0" max="100" step="1" value="40" required>
+          </div>
+          <div class="weight-note" id="weightNote">Total bobot: 100% ✓</div>
+          <div class="buttons">
+            <button class="primary" type="submit">Hitung nilai</button>
+            <button class="secondary" type="reset">Reset</button>
+          </div>
+          <div class="error" id="error" role="alert"></div>
+        </form>
+      </section>
+
+      <section class="card result-card" aria-live="polite">
+        <h2>📊 Hasil perhitungan</h2>
+        <div class="result-top" id="resultName">Hasil nilai akhir</div>
+        <div class="score">
+          <strong id="score">—</strong>
+          <small>/ 100</small>
+        </div>
+        <p class="grade" id="grade">Belum dihitung</p>
+        <p class="message" id="message">Masukkan nilai di sebelah kiri, lalu tekan tombol “Hitung nilai”.</p>
+        <div class="breakdown">
+          <div class="breakdown-row"><span>Kontribusi tugas</span><strong id="taskResult">—</strong></div>
+          <div class="breakdown-row"><span>Kontribusi UTS</span><strong id="utsResult">—</strong></div>
+          <div class="breakdown-row"><span>Kontribusi UAS</span><strong id="uasResult">—</strong></div>
+          <div class="breakdown-row"><span>Total bobot</span><strong id="totalWeight">—</strong></div>
+        </div>
+      </section>
+    </div>
+    <footer>
+      Kalkulator ini memberikan perkiraan berdasarkan bobot yang kamu masukkan. Aturan predikat dan kelulusan bisa berbeda di setiap sekolah.
+    </footer>
+  </main>
+
+  <script>
+    const form = document.getElementById("gradeForm");
+    const fields = ["task", "uts", "uas", "taskWeight", "utsWeight", "uasWeight"];
+    const errorBox = document.getElementById("error");
+    const weightNote = document.getElementById("weightNote");
+
+    function numberFrom(id) {
+      return Number(document.getElementById(id).value);
+    }
+
+    function showError(message) {
+      errorBox.textContent = message;
+      errorBox.style.display = "block";
+    }
+
+    function hideError() {
+      errorBox.textContent = "";
+      errorBox.style.display = "none";
+    }
+
+    function validate() {
+      for (const id of fields) {
+        const input = document.getElementById(id);
+        const value = input.value.trim();
+        if (value === "" || !Number.isFinite(Number(value))) {
+          throw new Error("Isi semua kolom nilai dan bobot dengan angka yang valid.");
+        }
+        const n = Number(value);
+        if (n < Number(input.min) || n > Number(input.max)) {
+          throw new Error("Nilai dan bobot harus berada dalam rentang 0 sampai 100.");
+        }
+      }
+
+      const totalWeight = numberFrom("taskWeight") + numberFrom("utsWeight") + numberFrom("uasWeight");
+      if (Math.abs(totalWeight - 100) > 0.0001) {
+        throw new Error("Total bobot harus tepat 100%. Sekarang totalnya " + totalWeight + "%.");
+      }
+      return totalWeight;
+    }
+
+    function calculate(event) {
+      if (event) event.preventDefault();
+      hideError();
+
+      try {
+        const totalWeight = validate();
+        const task = numberFrom("task");
+        const uts = numberFrom("uts");
+        const uas = numberFrom("uas");
+        const tw = numberFrom("taskWeight") / 100;
+        const uw = numberFrom("utsWeight") / 100;
+        const aw = numberFrom("uasWeight") / 100;
+
+        const taskPart = task * tw;
+        const utsPart = uts * uw;
+        const uasPart = uas * aw;
+        const finalScore = taskPart + utsPart + uasPart;
+        let grade, message;
+
+        if (finalScore >= 90) {
+          grade = "A — Sangat baik";
+          message = "Mantap! Pertahankan cara belajarmu dan terus tingkatkan pemahaman.";
+        } else if (finalScore >= 80) {
+          grade = "B — Baik";
+          message = "Hasil yang bagus. Tinjau materi yang masih sulit agar bisa meningkat.";
+        } else if (finalScore >= 70) {
+          grade = "C — Cukup";
+          message = "Kamu punya dasar yang baik. Latihan rutin bisa membantu meningkatkan nilai.";
+        } else if (finalScore >= 60) {
+          grade = "D — Perlu ditingkatkan";
+          message = "Coba ulangi materi inti dan buat jadwal latihan yang konsisten.";
+        } else {
+          grade = "E — Perlu belajar lagi";
+          message = "Jangan menyerah. Mulai dari satu materi yang paling sulit, lalu berlatih bertahap.";
+        }
+
+        const name = document.getElementById("student").value.trim();
+        document.getElementById("resultName").textContent = name ? "Hasil nilai " + name : "Hasil nilai akhir";
+        document.getElementById("score").textContent = finalScore.toLocaleString("id-ID", { maximumFractionDigits: 2 });
+        document.getElementById("grade").textContent = grade;
+        document.getElementById("message").textContent = message;
+        document.getElementById("taskResult").textContent = taskPart.toLocaleString("id-ID", { maximumFractionDigits: 2 });
+        document.getElementById("utsResult").textContent = utsPart.toLocaleString("id-ID", { maximumFractionDigits: 2 });
+        document.getElementById("uasResult").textContent = uasPart.toLocaleString("id-ID", { maximumFractionDigits: 2 });
+        document.getElementById("totalWeight").textContent = totalWeight + "%";
+      } catch (error) {
+        showError(error.message);
+      }
+    }
+
+    form.addEventListener("submit", calculate);
+    form.addEventListener("reset", () => {
+      setTimeout(() => {
+        hideError();
+        weightNote.textContent = "Total bobot: 100% ✓";
+        document.getElementById("resultName").textContent = "Hasil nilai akhir";
+        document.getElementById("score").textContent = "—";
+        document.getElementById("grade").textContent = "Belum dihitung";
+        document.getElementById("message").textContent = "Masukkan nilai di sebelah kiri, lalu tekan tombol “Hitung nilai”.";
+        ["taskResult", "utsResult", "uasResult", "totalWeight"].forEach(id => document.getElementById(id).textContent = "—");
+      }, 0);
+    });
+
+    ["taskWeight", "utsWeight", "uasWeight"].forEach(id => {
+      document.getElementById(id).addEventListener("input", () => {
+        const total = numberFrom("taskWeight") + numberFrom("utsWeight") + numberFrom("uasWeight");
+        weightNote.textContent = "Total bobot: " + total + "%" + (Math.abs(total - 100) < 0.0001 ? " ✓" : " — harus 100%");
+      });
+    });
+
+    calculate();
+  </script>
+</body>
+</html>
