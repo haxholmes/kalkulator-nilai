@@ -5,78 +5,251 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kalkulator Nilai Sekolah</title>
   <style>
-    :root {
-      --bg: #0b1020;
-      --panel: #141c30;
-      --panel2: #1b2740;
-      --text: #f4f7ff;
-      --muted: #a9b5ce;
-      --accent: #7c9cff;
-      --accent2: #9d7cff;
-      --border: #2c3956;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: system-ui, -apple-system, Segoe UI, sans-serif;
-      color: var(--text);
-      background: radial-gradient(circle at top left, #1a2850 0, var(--bg) 48%);
-      padding: 28px 16px;
-    }
-    .container { max-width: 900px; margin: 0 auto; }
-    header { text-align: center; margin: 12px 0 28px; }
-    .logo {
-      display: inline-grid; place-items: center; width: 54px; height: 54px;
-      border-radius: 16px; background: linear-gradient(135deg, var(--accent), var(--accent2));
-      font-size: 26px; margin-bottom: 10px;
-    }
-    h1 { margin: 0; font-size: clamp(26px, 4vw, 38px); letter-spacing: -0.8px; }
-    header p { color: var(--muted); margin: 10px auto 0; max-width: 560px; line-height: 1.6; }
-    .layout { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 18px; }
-    .card {
-      background: rgba(20, 28, 48, .94); border: 1px solid var(--border);
-      border-radius: 22px; padding: 24px; box-shadow: 0 18px 50px rgba(0,0,0,.18);
-    }
-    h2 { font-size: 18px; margin: 0 0 20px; }
-    .field { margin-bottom: 17px; }
-    label { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 8px; font-weight: 650; font-size: 14px; }
-    label span { color: var(--muted); font-weight: 500; }
-    input {
-      width: 100%; border: 1px solid var(--border); border-radius: 12px;
-      padding: 13px 14px; background: #0e1629; color: var(--text);
-      font: inherit; outline: none; transition: border-color .2s;
-    }
-    input:focus { border-color: var(--accent); }
-    .hint { color: var(--muted); font-size: 12px; margin-top: 6px; }
-    .weight-note { padding: 11px 13px; border-radius: 12px; background: var(--panel2); color: var(--muted); font-size: 13px; margin: 8px 0 20px; }
-    .buttons { display: flex; gap: 10px; margin-top: 22px; }
-    button { border: 0; border-radius: 12px; padding: 13px 16px; font: inherit; font-weight: 750; cursor: pointer; }
-    .primary { flex: 1; color: #10162a; background: linear-gradient(135deg, #9cb4ff, #b6a1ff); }
-    .secondary { color: var(--text); background: var(--panel2); border: 1px solid var(--border); }
-    button:hover { filter: brightness(1.07); }
-    .result-card { display: flex; flex-direction: column; }
-    .result-top { color: var(--muted); font-size: 14px; }
-    .score {
-      display: grid; place-items: center; width: 160px; height: 160px; margin: 20px auto;
-      border-radius: 50%; border: 8px solid #29395f;
-      background: radial-gradient(circle, #1e2b4a, #141c30);
-      box-shadow: 0 0 0 8px rgba(124,156,255,.06);
-    }
-    .score strong { font-size: 42px; letter-spacing: -1px; }
-    .score small { color: var(--muted); margin-top: -35px; }
-    .grade { text-align: center; font-size: 22px; font-weight: 800; margin: 0; }
-    .message { color: var(--muted); text-align: center; line-height: 1.55; font-size: 14px; margin: 8px 0 22px; }
-    .breakdown { border-top: 1px solid var(--border); padding-top: 16px; margin-top: auto; }
-    .breakdown-row { display: flex; justify-content: space-between; gap: 12px; margin: 11px 0; font-size: 14px; }
-    .breakdown-row span { color: var(--muted); }
-    .error { display: none; color: #ffb3b3; background: #3b202b; padding: 11px 13px; border-radius: 10px; font-size: 13px; margin-top: 14px; }
-    footer { color: var(--muted); font-size: 12px; text-align: center; margin-top: 22px; line-height: 1.6; }
-    @media (max-width: 700px) {
-      .layout { grid-template-columns: 1fr; }
-      .card { padding: 20px; }
-      .result-card { min-height: 420px; }
-    }
+    
+:root {
+  --bg: #0b1020;
+  --card: #141c31;
+  --input: #0d1528;
+  --text: #f1f5f9;
+  --muted: #94a3b8;
+  --primary: #818cf8;
+  --border: #29344d;
+  --green: #34d399;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 32px 16px;
+  min-height: 100vh;
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(ellipse at top left, #312e8160, transparent 45%),
+    radial-gradient(ellipse at bottom right, #1d4ed840, transparent 40%),
+    var(--bg);
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.logo {
+  display: inline-block;
+  padding: 10px 14px;
+  border: 1px solid #818cf855;
+  border-radius: 14px;
+  background: #818cf81a;
+  font-size: 24px;
+}
+
+h1 {
+  margin: 16px 0 8px;
+  font-size: clamp(28px, 5vw, 42px);
+  letter-spacing: -1px;
+}
+
+header p {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  align-items: start;
+}
+
+.card {
+  padding: 26px;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  background: linear-gradient(145deg, #182239, #11182b);
+  box-shadow: 0 18px 45px #00000025;
+}
+
+h2 {
+  margin-top: 0;
+  margin-bottom: 22px;
+  font-size: 20px;
+}
+
+.field {
+  margin-bottom: 18px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #dbe4f5;
+}
+
+input {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  outline: none;
+  background: var(--input);
+  color: var(--text);
+  font: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px #818cf825;
+}
+
+.hint,
+.weight-note {
+  margin-top: 7px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+button {
+  padding: 13px 18px;
+  border: 0;
+  border-radius: 12px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s, filter 0.2s;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+.primary {
+  flex: 1;
+  background: linear-gradient(135deg, #818cf8, #6366f1);
+  color: white;
+}
+
+.secondary {
+  background: #29344d;
+  color: var(--text);
+}
+
+.result-card {
+  text-align: center;
+}
+
+.result-top {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.score {
+  margin: 18px 0 8px;
+  color: var(--green);
+  font-size: clamp(48px, 8vw, 72px);
+  font-weight: 800;
+  letter-spacing: -3px;
+  animation: appear 0.4s ease;
+}
+
+.grade {
+  display: inline-block;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: #818cf81c;
+  color: #a5b4fc;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.message {
+  margin: 16px 0 26px;
+  color: #cbd5e1;
+  line-height: 1.6;
+}
+
+.breakdown {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  text-align: left;
+}
+
+.breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #29344d80;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.breakdown-row strong {
+  color: var(--text);
+}
+
+.error {
+  margin-top: 14px;
+  color: #fca5a5;
+  font-size: 14px;
+}
+
+footer {
+  margin-top: 30px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 700px) {
+  body {
+    padding: 22px 12px;
+  }
+
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    padding: 20px;
+    border-radius: 18px;
+  }
+
+  .buttons button {
+    width: 100%;
+  }
+}
   </style>
 </head>
 <body>
