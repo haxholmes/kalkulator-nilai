@@ -325,6 +325,44 @@ footer {
     </footer>
   </main>
 
+  
+<section class="card" style="margin-top: 22px;">
+  <h2>🎯 Hitung Target Nilai</h2>
+  <p style="color: #94a3b8;">
+    Cari tahu nilai UAS minimum untuk mencapai target nilai akhir.
+  </p>
+
+  <div class="field">
+    <label for="targetTugas">Nilai Tugas (0–100)</label>
+    <input id="targetTugas" type="number" min="0" max="100"
+      placeholder="Contoh: 80">
+  </div>
+
+  <div class="field">
+    <label for="targetUTS">Nilai UTS (0–100)</label>
+    <input id="targetUTS" type="number" min="0" max="100"
+      placeholder="Contoh: 70">
+  </div>
+
+  <div class="field">
+    <label for="targetAkhir">Target Nilai Akhir (0–100)</label>
+    <input id="targetAkhir" type="number" min="0" max="100"
+      placeholder="Contoh: 85">
+  </div>
+
+  <div class="buttons">
+    <button type="button" class="primary"
+      onclick="hitungTargetNilai()">
+      Hitung Target
+    </button>
+  </div>
+
+  <p id="hasilTarget" aria-live="polite"
+    style="margin-top: 18px; line-height: 1.6;">
+  </p>
+</section>
+
+
   <script>
     const form = document.getElementById("gradeForm");
     const fields = ["task", "uts", "uas", "taskWeight", "utsWeight", "uasWeight"];
@@ -436,6 +474,45 @@ footer {
     });
 
     calculate();
+    
+function hitungTargetNilai() {
+  const tugas = Number(document.getElementById("targetTugas").value);
+  const uts = Number(document.getElementById("targetUTS").value);
+  const target = Number(document.getElementById("targetAkhir").value);
+
+  const bobotTugas = 30;
+  const bobotUTS = 30;
+  const bobotUAS = 40;
+
+  const hasil = (target -
+    (tugas * bobotTugas / 100) -
+    (uts * bobotUTS / 100)) / (bobotUAS / 100);
+
+  const output = document.getElementById("hasilTarget");
+
+  if (
+    document.getElementById("targetTugas").value === "" ||
+    document.getElementById("targetUTS").value === "" ||
+    document.getElementById("targetAkhir").value === "" ||
+    tugas < 0 || tugas > 100 ||
+    uts < 0 || uts > 100 ||
+    target < 0 || target > 100
+  ) {
+    output.textContent = "Masukkan semua nilai antara 0–100.";
+    return;
+  }
+
+  if (hasil > 100) {
+    output.textContent =
+      "Target ini tidak bisa dicapai dengan bobot nilai saat ini.";
+  } else if (hasil <= 0) {
+    output.textContent =
+      "Target sudah tercapai berdasarkan nilai tugas dan UTS.";
+  } else {
+    output.textContent =
+      "Nilai UAS minimum yang dibutuhkan: " + Math.ceil(hasil);
+  }
+}
   </script>
 </body>
 </html>
